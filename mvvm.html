@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>MVVM</title>
+  </head>
+  <body>
+    <div id="mvvm-app" style="text-align: center; margin-top: 100px">
+      <input v-model="title" />
+      <h2>{{title}}</h2>
+      <h2>{{age}}</h2>
+      <h2>{{age2}}</h2>
+      <button v-on:click="clickBtnTitle">初始化title</button>
+      <button v-on:click="clickBtn">打印age3</button>
+    </div>
+  </body>
+  <script type="module">
+    import MVVM from "./src/MVVM.js";
+    new MVVM({
+      el: "#mvvm-app",
+      data: {
+        title: "hello world",
+      },
+      computed: {
+        age() {
+          return this.title;
+        },
+        age2() {
+          return this.age + "程鑫";
+        },
+        age3() {
+          return this.age2 + "123" + this.title;
+        },
+      },
+      watch: {
+        age(val, oldVal) {
+          console.log("新值:", val);
+          console.log("旧值:", oldVal);
+        },
+      },
+      methods: {
+        clickBtnTitle: function (e) {
+          this.title = "cheng";
+        },
+        clickBtn: function (e) {
+          console.log("age3", this.age3);
+        },
+      },
+    });
+  </script>
+</html>
