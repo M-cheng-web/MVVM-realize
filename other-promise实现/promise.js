@@ -166,20 +166,6 @@ Promise.prototype.then = function (onResolved, onRejected) {
   }
 }
 
-Promise.prototype.catch = function (onRejected) {
-  return this.then(null, onRejected)
-}
-
-Promise.deferred = Promise.defer = function () {
-  var dfd = {}
-  dfd.promise = new Promise(function (resolve, reject) {
-    dfd.resolve = resolve
-    dfd.reject = reject
-  })
-  return dfd
-}
-
-
 new Promise((resolve, reject) => {
   resolve(123);
 })
@@ -209,3 +195,48 @@ new Promise((resolve, reject) => {
   );
 
 
+Promise.prototype.catch = function (onRejected) {
+  return this.then(null, onRejected)
+}
+
+Promise.deferred = Promise.defer = function () {
+  var dfd = {}
+  dfd.promise = new Promise(function (resolve, reject) {
+    dfd.resolve = resolve
+    dfd.reject = reject
+  })
+  return dfd
+}
+
+Promise.resolve = function (value) {
+  return new Promise(function (resolve, reject) { resolve(value) })
+}
+
+Promise.reject = function (reason) {
+  return new Promise(function (resolve, reject) { reject(reason) })
+}
+
+Promise.all = function (promises) {
+  return new Promise((resolve, reject) => {
+    let values = []
+    let count = 0
+    promises.forEach((promise, index) => {
+      promise.then(value => {
+        console.log('value:', value, 'index:', index)
+        values[index] = value
+        count++
+        if (count === promises.length) {
+          resolve(values)
+        }
+      }, reject)
+    })
+  })
+}
+
+Promise.race = function (promises) {
+  return new Promise((resolve, reject) => {
+    promises.forEach((promise) => {
+      promise.then(resolve, reject);
+    });
+  });
+}
